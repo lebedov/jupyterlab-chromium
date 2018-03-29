@@ -1,7 +1,7 @@
 .. -*- rst -*-
 
-Launch Jupyter Lab as a Chromium App
-====================================
+Launch JupyterLab as a Chromium App
+===================================
 
 This script launches a local JupyterLab server and connects to it with Chromium
 running as an app to provide a more IDE-like experience. The server is
