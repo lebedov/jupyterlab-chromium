@@ -16,7 +16,7 @@ Requirements
   
 Installation
 ------------
-Drop `jupyterlab-chromium` in your `$PATH`, ensure that it is executable, and
+Drop ``jupyterlab-chromium`` in your ``$PATH``, ensure that it is executable, and
 you are all set.
 
 Author
