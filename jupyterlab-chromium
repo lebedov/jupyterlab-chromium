@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Launch jupyterlab as Chromium application.
+# Based upon http://christopherroach.com/articles/jupyterlab-desktop-app/
+# Copyright 2018 Lev E. Givon
+# MIT License (http://www.opensource.org/licenses/mit-license)
+
+JUPYTER=`which jupyter`
+if [[ ! $JUPYTER ]]; then
+    echo jupyter not found
+    exit 1
+fi
+CHROMIUM=`which chromium-browser`
+if [[ ! $CHROMIUM ]]; then
+    echo chromium-browser not found
+    exit 1
+fi
+
+# Need jq to process json output:
+JQ=`which jq`
+if [[ ! $JQ ]]; then
+    echo jq not found
+    exit 1
+fi
+
+# Only start jupyterlab if it isn't already running:
+JSON=`$JUPYTER notebook list --json`
+if [[ ! $JSON ]]; then
+    (trap '' HUP; $JUPYTER lab --no-browser &) > /dev/null <&1 2>&1 & disown
+    sleep 1
+fi
+JSON=`$JUPYTER notebook list --json`
+URL=`echo $JSON | jq --raw-output '.url+("?token="+.token)'`
+PORT=`echo $JSON | jq '.port'`
+$CHROMIUM --app=$URL
+
+# Shut down jupyterlab server after Chromium exits:
+$JUPYTER notebook stop $PORT
