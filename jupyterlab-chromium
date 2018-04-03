@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Launch jupyterlab as Chromium application.
+# Launch JupyterLab as Chromium application.
 # Based upon http://christopherroach.com/articles/jupyterlab-desktop-app/
 # Copyright 2018 Lev E. Givon
 # MIT License (http://www.opensource.org/licenses/mit-license)
@@ -23,16 +23,23 @@ if [[ ! $JQ ]]; then
     exit 1
 fi
 
-# Only start jupyterlab if it isn't already running:
+# Only start JupyterLab if it isn't already running:
 JSON=`$JUPYTER notebook list --json`
 if [[ ! $JSON ]]; then
     (trap '' HUP; $JUPYTER lab --no-browser &) > /dev/null <&1 2>&1 & disown
     sleep 1
 fi
+
+# Get info about running JupyterLab server:
 JSON=`$JUPYTER notebook list --json`
 URL=`echo $JSON | jq --raw-output '.url+("?token="+.token)'`
 PORT=`echo $JSON | jq '.port'`
-$CHROMIUM --app=$URL
+
+# Run Chromium with temporary new user dir so that it runs as a new process if
+# other Chromium instances are already running:
+TMPDIR=`mktemp -d`
+$CHROMIUM --user-data-dir=$TMPDIR --app=$URL
+rm -rf $TMPDIR
 
 # Shut down jupyterlab server after Chromium exits:
 $JUPYTER notebook stop $PORT
