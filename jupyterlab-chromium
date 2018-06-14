@@ -65,11 +65,23 @@ fi
 JSON=`$JUPYTER notebook list --json`
 if [[ ! $JSON ]]; then
     (trap '' HUP; $JUPYTER lab --no-browser &) > /dev/null <&1 2>&1 & disown
-    sleep 1
 fi
 
-# Get info about running JupyterLab server:
-JSON=`$JUPYTER notebook list --json`
+# Get info about running JupyterLab server; check for a running server several
+# times to give JupyterLab time to start:
+MAX_ITER=5
+for ((i=0; i<$MAX_ITER; i++)); do
+    JSON=`$JUPYTER notebook list --json`
+    if [[ $JSON ]]; then
+        break
+    fi
+    sleep 0.5
+done
+if [[ $i == $MAX_ITER ]]; then
+    echo cannot start jupyter
+    exit 1
+fi
+
 URL=`echo $JSON | jq --raw-output '.url+("?token="+.token)'`
 PORT=`echo $JSON | jq '.port'`
 
