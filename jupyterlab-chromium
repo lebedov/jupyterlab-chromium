@@ -69,7 +69,7 @@ fi
 
 # Get info about running JupyterLab server; check for a running server several
 # times to give JupyterLab time to start:
-MAX_ITER=5
+MAX_ITER=10
 for ((i=0; i<$MAX_ITER; i++)); do
     JSON=`$JUPYTER notebook list --json`
     if [[ $JSON ]]; then
