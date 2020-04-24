@@ -49,5 +49,5 @@ information.
 License
 -------
 This software is licensed under the [MIT License](http://www.opensource.org/licenses/mit-license).  See the included
-[LICENSE.rst](https://github.com/lebedov/jupyterlab-chromium/blob/master/LICENSE.md) file for more information.
+[LICENSE.md](https://github.com/lebedov/jupyterlab-chromium/blob/master/LICENSE.md) file for more information.
 
