@@ -17,7 +17,26 @@ Requirements
 Installation
 ------------
 Drop ``jupyterlab-chromium`` in your ``$PATH``, ensure that it is executable, and
-you are all set.
+you are all set. If you want to create a shortcut to click on from your desktop 
+or from a launcher, you can create a `.desktop` file as follows:
+
+    [Desktop Entry]
+    Type=Application
+    Version=1.0
+    Name=JupyterLab
+    GenericName=JupyterLab
+    Comment=JupyterLab
+    Exec=/path/to/jupyterlab-chromium
+    Icon=/path/to/jupyter-logo-transparent.png
+    Terminal=false
+    StartupWMClass=chromium-browser
+    Categories=Development;Science;IDE
+    StartupNotify=true
+
+If JupyterLab is installed in a conda environment and your `.bashrc` 
+file initializes conda properly, replace the `Exec` line with
+
+    Exec=bash -c "source ~/.bashrc && conda activate env_name && /path/to jupyterlab-chromium"
 
 Author
 ------
