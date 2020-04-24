@@ -85,11 +85,9 @@ fi
 URL=`echo $JSON | jq --raw-output '.url+("?token="+.token)'`
 PORT=`echo $JSON | jq '.port'`
 
-# Run Chromium with temporary new user dir so that it runs as a new process if
+# Run Chromium with temporary profile so that it runs as a new process if
 # other Chromium instances are already running:
-TMPDIR=`mktemp -d`
-$CHROMIUM --user-data-dir=$TMPDIR --app=$URL
-rm -rf $TMPDIR
+$CHROMIUM --temp-profile --app=$URL
 
 # Shut down jupyterlab server after Chromium exits:
 $JUPYTER notebook stop $PORT
