@@ -1,5 +1,7 @@
-.. -*- rst -*-
-
+<!--- 
+-*- mode:markdown -*-
+vi:ft=markdown
+-->
 Launch JupyterLab as a Chromium App
 ===================================
 
@@ -9,14 +11,14 @@ terminated after Chromium exits.
 
 Requirements
 ------------
-- `Bash <https://www.gnu.org/software/bash/>`_
-- `Chromium <https://www.chromium.org/>`_
-- `jq <https://stedolan.github.io/jq/>`_
-- `JupyterLab <https://github.com/jupyterlab/jupyterlab>`_
+- [Bash](https://www.gnu.org/software/bash/)
+- [Chromium](https://www.chromium.org/)
+- [jq](https://stedolan.github.io/jq/)
+- [JupyterLab](https://github.com/jupyterlab/jupyterlab)
   
 Installation
 ------------
-Drop ``jupyterlab-chromium`` in your ``$PATH``, ensure that it is executable, and
+Drop `jupyterlab-chromium` in your `$PATH`, ensure that it is executable, and
 you are all set. If you want to create a shortcut to click on from your desktop 
 or from a launcher, you can create a `.desktop` file as follows:
 
@@ -40,14 +42,12 @@ file initializes conda properly, replace the `Exec` line with
 
 Author
 ------
-See the included `AUTHORS.rst
-<https://github.com/lebedov/jupyterlab-chromium/blob/master/AUTHORS.rst>`_ file for more
+See the included [AUTHORS.md](
+https://github.com/lebedov/jupyterlab-chromium/blob/master/AUTHORS.md) file for more
 information.
 
 License
 -------
-This software is licensed under the `MIT License
-<http://www.opensource.org/licenses/mit-license>`_.  See the included
-`LICENSE.rst <https://github.com/lebedov/jupyterlab-chromium/blob/master/LICENSE.rst>`_ file
-for more information.
+This software is licensed under the [MIT License](http://www.opensource.org/licenses/mit-license).  See the included
+[LICENSE.rst](https://github.com/lebedov/jupyterlab-chromium/blob/master/LICENSE.md) file for more information.
 
