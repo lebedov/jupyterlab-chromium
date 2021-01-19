@@ -1,29 +1,51 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Launch JupyterLab as Chromium application.
 # Based upon http://christopherroach.com/articles/jupyterlab-desktop-app/
-# Copyright 2018 Lev E. Givon
+# Copyright 2018-2021 Lev E. Givon
 # MIT License (http://www.opensource.org/licenses/mit-license)
 
-OPTS=`getopt -o hd: --long help,dir: -n $0 -- "$@"`
+OS=`uname -s`
+if [[ $OS == Linux ]]; then
+    OPTS=`getopt -o hc:d:e: --long help,dir: -n $0 -- "$@"`
+elif [[ $OS == Darwin ]]; then
+    OPTS=`getopt hc:d:e: "$@"`
+else
+    echo unsupported OS
+    exit 1
+fi
+
 if [[ $? != 0 ]]; then
     exit 1;
 fi
 
 eval set -- "$OPTS"
 
+CHROMIUM=chromium-browser
 DIR=`pwd`
+ENV=base
 while true; do
     case "$1" in
+        -c|--chromium)
+            CHROMIUM=$2
+            shift 2
+            ;;
         -d|--dir)
             DIR=$2
+            shift 2
+            ;;
+        -e|--env)
+            ENV=$2
             shift 2
             ;;
         -h|--help)
             echo "Usage: `basename $0` [-d BASEDIR]"
             echo "Start JupyterLab as Chromium app"
+            echo "(long arguments not available on MacOS)"
             echo ""
-            echo " -d, --dir BASEDIR         cd to BASEDIR before starting"
+            echo " -c, --chromium PATH     specify path to Chromium executable"
+            echo " -d, --dir BASEDIR       cd to BASEDIR before starting"
+            echo " -e, --env ENV           look for Jupyterlab in conda env ENV"
             exit 0
             break
             ;;
@@ -43,14 +65,8 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-JUPYTER=`which jupyter`
-if [[ ! $JUPYTER ]]; then
-    echo jupyter not found
-    exit 1
-fi
-CHROMIUM=`which chromium-browser`
 if [[ ! $CHROMIUM ]]; then
-    echo chromium-browser not found
+    echo "Chromium executable ($CHROMIUM) not found"
     exit 1
 fi
 
@@ -61,8 +77,21 @@ if [[ ! $JQ ]]; then
     exit 1
 fi
 
+CONDA_EXE=`which conda`
+if [[ $CONDA_EXE ]]; then
+    _SCRIPT=`$CONDA_EXE info --root`/etc/profile.d/conda.sh
+    . $_SCRIPT
+    conda activate $ENV
+fi
+
+JUPYTER=`which jupyter`
+if [[ ! $JUPYTER ]]; then
+    echo jupyter not found
+    exit 1
+fi
+
 # Only start JupyterLab if it isn't already running:
-JSON=`$JUPYTER notebook list --json`
+JSON=`$JUPYTER lab list --json`
 if [[ ! $JSON ]]; then
     (trap '' HUP; $JUPYTER lab --no-browser &) > /dev/null <&1 2>&1 & disown
 fi
@@ -71,7 +100,7 @@ fi
 # times to give JupyterLab time to start:
 MAX_ITER=10
 for ((i=0; i<$MAX_ITER; i++)); do
-    JSON=`$JUPYTER notebook list --json`
+    JSON=`$JUPYTER lab list --json`
     if [[ $JSON ]]; then
         break
     fi
@@ -90,4 +119,9 @@ PORT=`echo $JSON | jq '.port'`
 $CHROMIUM --temp-profile --app=$URL
 
 # Shut down jupyterlab server after Chromium exits:
-$JUPYTER notebook stop $PORT
+$JUPYTER lab stop $PORT
+
+# Deactivate conda environment:
+if [[ $CONDA_EXE ]]; then
+    conda deactivate
+fi

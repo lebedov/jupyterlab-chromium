@@ -4,7 +4,7 @@ vi:ft=markdown
 -->  
 License
 =======
-Copyright 2018-2020 Lev E. Givon
+Copyright 2018-2021 Lev E. Givon
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
